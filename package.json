@@ -1,7 +1,7 @@
 {
   "name": "warp-terminal-launcher",
   "displayName": "Warp Terminal Launcher",
-  "description": "A VS Code extension to launch Warp terminal from VS Code with a configurable path for Windows, macOS, and Linux.",
+  "description": "Launch Warp terminal from VS Code with configurable path, cross-platform support, and terminal integration.",
   "version": "0.0.1",
   "publisher": "azmolla",
   "icon": "icon.webp",
@@ -12,17 +12,11 @@
     "url": "https://github.com/AbiruzzamanMolla/warp-terminal-launcher-vscode-extension/issues"
   },
   "homepage": "https://marketplace.visualstudio.com/items?itemName=azmolla.warp-terminal-launcher",
-  "categories": [
-    "Other"
-  ],
-  "keywords": [
-    "terminal",
-    "warp",
-    "shell",
-    "vscode"
-  ],
+  "categories": ["Other"],
+  "keywords": ["terminal", "warp", "shell", "vscode"],
   "activationEvents": [
-    "onCommand:warp-terminal-launcher.launch"
+    "onCommand:warp-terminal-launcher.launch",
+    "onCommand:warp-terminal-launcher.setDefault"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -30,6 +24,10 @@
       {
         "command": "warp-terminal-launcher.launch",
         "title": "Launch Warp Terminal"
+      },
+      {
+        "command": "warp-terminal-launcher.setDefault",
+        "title": "Set Warp as Default Terminal"
       }
     ],
     "configuration": {
@@ -39,7 +37,7 @@
         "warpTerminalLauncher.path": {
           "type": "string",
           "default": "",
-          "description": "The full path to the Warp executable. Leave empty to use default per OS."
+          "description": "Full path to the Warp executable. Leave empty to use default per OS."
         },
         "warpTerminalLauncher.openInWorkspace": {
           "type": "boolean",
@@ -47,6 +45,13 @@
           "description": "Open Warp in the current VS Code workspace folder."
         }
       }
+    },
+    "terminal": {
+      "id": "warp",
+      "name": "Warp",
+      "icon": "$(terminal)",
+      "path": "${config:warpTerminalLauncher.path}",
+      "args": []
     }
   },
   "repository": {
@@ -72,13 +77,6 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1"
   },
-  "extensionKind": [
-    "workspace",
-    "ui"
-  ],
-  "os": [
-    "win32",
-    "darwin",
-    "linux"
-  ]
+  "extensionKind": ["workspace", "ui"],
+  "os": ["win32", "darwin", "linux"]
 }
