@@ -1,6 +1,6 @@
 # Warp Terminal Launcher
 
-Launch the **Warp terminal** directly from VS Code, with cross-platform support and integration into the terminal dropdown.
+Launch the **Warp terminal** directly from VS Code with full **cross-platform support** and terminal integration.
 
 ![Warp Terminal Launcher](https://via.placeholder.com/400x100.png?text=Warp+Terminal+Launcher)
 
@@ -8,26 +8,31 @@ Launch the **Warp terminal** directly from VS Code, with cross-platform support 
 
 ## Features
 
-- Launch Warp terminal from VS Code in the **current workspace folder**.
-- **Cross-platform**: Works on Windows, macOS, and Linux.
-- **Configurable Warp executable path** in VS Code settings.
-- Adds Warp as a **terminal profile** in the dropdown list.
+- Launch Warp terminal in the **current workspace folder**.
+- **Cross-platform**: Windows, macOS, and Linux.
+- Configurable Warp executable path via VS Code settings.
+- Automatically registers Warp as a **terminal profile** in VS Code.
+- **Set Warp as default terminal** with a single command.
 - **Status bar icon** for one-click Warp launch.
-- **Command to set Warp as default terminal**.
 
 ---
 
 ## Installation
 
-1. Install the `.vsix` package manually or search for **Warp Terminal Launcher** in the VS Code Marketplace.
-2. Reload VS Code.
+Install directly from the VS Code Marketplace:
+
+[**Warp Terminal Launcher on Marketplace**](https://marketplace.visualstudio.com/items?itemName=azmolla.warp-terminal-launcher)
+
+Or, install the `.vsix` package manually and reload VS Code.
 
 ---
 
 ## Usage
 
 - Open Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`) and search for:
+
   - `Launch Warp Terminal` → Opens Warp in the current workspace folder.
+  - `Register Warp Terminal Profile` → Registers Warp in terminal profiles.
   - `Set Warp as Default Terminal` → Adds Warp to terminal dropdown and sets it as default.
 
 - Click the **status bar icon** at the bottom left to launch Warp quickly.
@@ -40,10 +45,10 @@ Open **Settings → Extensions → Warp Terminal Launcher**:
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `warpTerminalLauncher.path` | `string` | Auto-detected per OS | Full path to Warp executable. Leave empty to use default. |
-| `warpTerminalLauncher.openInWorkspace` | `boolean` | `true` | Open Warp in the current VS Code workspace folder. |
+| `warpTerminalLauncher.path` | `string` | Auto-detected per OS | Full path to the Warp executable. Leave empty to use the default. |
+| `warpTerminalLauncher.setAsDefault` | `boolean` | `true` | Automatically set Warp as the default terminal. |
 
-**Default paths by OS:**
+**Default Warp paths per OS:**
 
 - **Windows:** `C:\Program Files\Warp\Warp.exe`
 - **macOS:** `/Applications/Warp.app/Contents/MacOS/Warp`
@@ -51,21 +56,30 @@ Open **Settings → Extensions → Warp Terminal Launcher**:
 
 ---
 
-## Extension Commands
+## Commands
 
 | Command | Description |
 |---------|-------------|
 | `Launch Warp Terminal` | Opens Warp in the current workspace folder. |
-| `Set Warp as Default Terminal` | Adds Warp as terminal profile and sets it as default. |
+| `Register Warp Terminal Profile` | Registers Warp in terminal profiles. |
+| `Set Warp as Default Terminal` | Sets Warp as the default integrated terminal. |
 
 ---
 
 ## Contributing
 
-Feel free to submit **issues** or **feature requests** on [GitHub](https://github.com/AbiruzzamanMolla/warp-terminal-launcher-vscode-extension/issues).
+Submit issues or feature requests on [GitHub](https://github.com/AbiruzzamanMolla/warp-terminal-launcher-vscode-extension/issues).
 
 ---
 
 ## License
 
 MIT © [Azmolla](https://github.com/AbiruzzamanMolla)
+
+---
+
+## Marketplace
+
+You can install the extension directly from the VS Code Marketplace:
+
+[**Warp Terminal Launcher**](https://marketplace.visualstudio.com/items?itemName=azmolla.warp-terminal-launcher)

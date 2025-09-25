@@ -16,6 +16,7 @@
   "keywords": ["terminal", "warp", "shell", "vscode"],
   "activationEvents": [
     "onCommand:warp-terminal-launcher.launch",
+    "onCommand:warp-terminal-launcher.setProfile",
     "onCommand:warp-terminal-launcher.setDefault"
   ],
   "main": "./out/extension.js",
@@ -24,6 +25,10 @@
       {
         "command": "warp-terminal-launcher.launch",
         "title": "Launch Warp Terminal"
+      },
+      {
+        "command": "warp-terminal-launcher.setProfile",
+        "title": "Register Warp Terminal Profile"
       },
       {
         "command": "warp-terminal-launcher.setDefault",
@@ -39,21 +44,15 @@
           "default": "",
           "description": "Full path to the Warp executable. Leave empty to use default per OS."
         },
-        "warpTerminalLauncher.openInWorkspace": {
+        "warpTerminalLauncher.setAsDefault": {
           "type": "boolean",
           "default": true,
-          "description": "Open Warp in the current VS Code workspace folder."
+          "description": "Automatically set Warp as the default terminal."
         }
       }
-    },
-    "terminal": {
-      "id": "warp",
-      "name": "Warp",
-      "icon": "$(terminal)",
-      "path": "${config:warpTerminalLauncher.path}",
-      "args": []
     }
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/AbiruzzamanMolla/warp-terminal-launcher-vscode-extension.git"
