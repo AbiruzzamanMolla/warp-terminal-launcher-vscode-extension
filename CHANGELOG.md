@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.5] - 2025-10-02
+### Fixed
+- Fixed the issue of opening in the home directory instead of the workspace root when no selection is made.
+
+## [0.0.4] - 2025-10-02
+### Fixed
+- fixed icon url issue in readme
+
 ## [0.0.3] - 2025-10-02
 ### Added
 - New commands: “Open Warp Terminal in New Tab” and “Open Warp Terminal in New Window”.

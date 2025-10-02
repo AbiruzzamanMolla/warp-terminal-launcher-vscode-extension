@@ -2,7 +2,7 @@
   "name": "warp-terminal-launcher",
   "displayName": "Warp Terminal Launcher",
   "description": "Launch Warp terminal from VS Code with configurable path, cross-platform support, URI mode, and terminal integration.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "azmolla",
   "icon": "icon.webp",
   "engines": {
@@ -17,7 +17,6 @@
   "activationEvents": [
     "onCommand:warp-terminal-launcher.launch",
     "onCommand:warp-terminal-launcher.setProfile",
-    "onCommand:warp-terminal-launcher.setDefault",
     "onCommand:warp-terminal-launcher.openInNewWindow",
     "onCommand:warp-terminal-launcher.openInNewTab"
   ],
@@ -31,10 +30,6 @@
       {
         "command": "warp-terminal-launcher.setProfile",
         "title": "Register Warp Terminal Profile"
-      },
-      {
-        "command": "warp-terminal-launcher.setDefault",
-        "title": "Set Warp as Default Terminal"
       },
       {
         "command": "warp-terminal-launcher.openInNewWindow",

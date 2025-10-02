@@ -25,13 +25,21 @@ function getWarpUri(action: "new_window" | "new_tab", cwd: string): string {
 }
 
 function resolveFolderFromUri(uri?: vscode.Uri): string {
+    // If user clicked on a folder or file
     if (uri && uri.scheme === "file") {
         if (fs.statSync(uri.fsPath).isDirectory()) {
             return uri.fsPath;
         }
         return path.dirname(uri.fsPath);
     }
-    return vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || os.homedir();
+
+    // Fallback to workspace root
+    if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+        return vscode.workspace.workspaceFolders[0].uri.fsPath;
+    }
+
+    // Last fallback: home directory
+    return os.homedir();
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -78,7 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
     );
     context.subscriptions.push(setProfileDisposable);
 
-    // Spawn-based launcher
+    // Spawn-based launcher: opens Warp in current selection or workspace root
     const launchDisposable = vscode.commands.registerCommand(
         "warp-terminal-launcher.launch",
         (uri?: vscode.Uri) => {
