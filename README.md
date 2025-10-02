@@ -2,7 +2,7 @@
 
 Launch the **Warp terminal** directly from VS Code with full **cross-platform support** and terminal integration.
 
-![Warp Terminal Launcher](https://github.com/AbiruzzamanMolla/warp-terminal-launcher-vscode-extension/blob/master/icon.webp)
+![Warp Terminal Launcher](https://raw.githubusercontent.com/AbiruzzamanMolla/warp-terminal-launcher-vscode-extension/refs/heads/master/icon.webp)
 
 ---
 

@@ -2,7 +2,7 @@
   "name": "warp-terminal-launcher",
   "displayName": "Warp Terminal Launcher",
   "description": "Launch Warp terminal from VS Code with configurable path, cross-platform support, URI mode, and terminal integration.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "azmolla",
   "icon": "icon.webp",
   "engines": {
