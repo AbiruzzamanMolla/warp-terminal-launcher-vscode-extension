@@ -17,8 +17,25 @@ function getDefaultWarpPath(): string {
     }
 }
 
+function getWarpUri(action: "new_window" | "new_tab", cwd: string): string {
+    const config = vscode.workspace.getConfiguration("warpTerminalLauncher");
+    const warpVersion = config.get<string>("warpVersion", "stable");
+    const scheme = warpVersion === "preview" ? "warppreview://" : "warp://";
+    return `${scheme}action/${action}?path=${encodeURIComponent(cwd)}`;
+}
+
+function resolveFolderFromUri(uri?: vscode.Uri): string {
+    if (uri && uri.scheme === "file") {
+        if (fs.statSync(uri.fsPath).isDirectory()) {
+            return uri.fsPath;
+        }
+        return path.dirname(uri.fsPath);
+    }
+    return vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || os.homedir();
+}
+
 export function activate(context: vscode.ExtensionContext) {
-    // Command to register/update Warp terminal profile
+    // Register Warp terminal profile
     const setProfileDisposable = vscode.commands.registerCommand(
         "warp-terminal-launcher.setProfile",
         async () => {
@@ -27,12 +44,9 @@ export function activate(context: vscode.ExtensionContext) {
                 const warpPath = config.get<string>("path") || getDefaultWarpPath();
                 const setAsDefault = config.get<boolean>("setAsDefault") ?? true;
 
-                // Determine profile config key by OS
-                const platformKey = process.platform === "win32"
-                    ? "windows"
-                    : process.platform === "darwin"
-                    ? "osx"
-                    : "linux";
+                const platformKey =
+                    process.platform === "win32" ? "windows" :
+                    process.platform === "darwin" ? "osx" : "linux";
 
                 const terminalProfilesKey = `terminal.integrated.profiles.${platformKey}`;
                 const defaultProfileKey = `terminal.integrated.defaultProfile.${platformKey}`;
@@ -40,7 +54,6 @@ export function activate(context: vscode.ExtensionContext) {
                 const currentProfiles =
                     (vscode.workspace.getConfiguration().get(terminalProfilesKey) as any) || {};
 
-                // Add/Update Warp profile
                 currentProfiles["warp"] = { path: warpPath, args: [] };
 
                 await vscode.workspace.getConfiguration().update(
@@ -49,7 +62,6 @@ export function activate(context: vscode.ExtensionContext) {
                     vscode.ConfigurationTarget.Global
                 );
 
-                // Optionally set as default
                 if (setAsDefault) {
                     await vscode.workspace.getConfiguration().update(
                         defaultProfileKey,
@@ -64,10 +76,9 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }
     );
-
     context.subscriptions.push(setProfileDisposable);
 
-    // Command to launch Warp
+    // Spawn-based launcher
     const launchDisposable = vscode.commands.registerCommand(
         "warp-terminal-launcher.launch",
         (uri?: vscode.Uri) => {
@@ -75,20 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.workspace.getConfiguration("warpTerminalLauncher").get<string>("path") ||
                 getDefaultWarpPath();
 
-            let folder: string;
-
-            if (uri && uri.scheme === "file") {
-                if (fs.statSync(uri.fsPath).isDirectory()) {
-                    // Right-clicked on a folder
-                    folder = uri.fsPath;
-                } else {
-                    // Right-clicked on a file → use its parent directory
-                    folder = path.dirname(uri.fsPath);
-                }
-            } else {
-                // Fallback: workspace root or home
-                folder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || os.homedir();
-            }
+            const folder = resolveFolderFromUri(uri);
 
             const warpProcess = spawn(warpPath, [], {
                 cwd: folder,
@@ -98,8 +96,35 @@ export function activate(context: vscode.ExtensionContext) {
             warpProcess.unref();
         }
     );
-
     context.subscriptions.push(launchDisposable);
+
+    // URI-based launcher: New Window
+    const newWindowDisposable = vscode.commands.registerCommand(
+        "warp-terminal-launcher.openInNewWindow",
+        async (uri?: vscode.Uri) => {
+            const folder = resolveFolderFromUri(uri);
+            const warpUri = getWarpUri("new_window", folder);
+            const success = await vscode.env.openExternal(vscode.Uri.parse(warpUri));
+            if (!success) {
+                vscode.window.showErrorMessage("Failed to open Warp in new window. Make sure Warp supports URI schemes.");
+            }
+        }
+    );
+    context.subscriptions.push(newWindowDisposable);
+
+    // URI-based launcher: New Tab
+    const newTabDisposable = vscode.commands.registerCommand(
+        "warp-terminal-launcher.openInNewTab",
+        async (uri?: vscode.Uri) => {
+            const folder = resolveFolderFromUri(uri);
+            const warpUri = getWarpUri("new_tab", folder);
+            const success = await vscode.env.openExternal(vscode.Uri.parse(warpUri));
+            if (!success) {
+                vscode.window.showErrorMessage("Failed to open Warp in new tab. Make sure Warp supports URI schemes.");
+            }
+        }
+    );
+    context.subscriptions.push(newTabDisposable);
 
     // Status bar icon
     const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -109,7 +134,7 @@ export function activate(context: vscode.ExtensionContext) {
     statusBarItem.show();
     context.subscriptions.push(statusBarItem);
 
-    // Optionally run setProfile automatically on activation
+    // Auto-register profile on activation
     vscode.commands.executeCommand("warp-terminal-launcher.setProfile");
 }
 

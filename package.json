@@ -1,8 +1,8 @@
 {
   "name": "warp-terminal-launcher",
   "displayName": "Warp Terminal Launcher",
-  "description": "Launch Warp terminal from VS Code with configurable path, cross-platform support, and terminal integration.",
-  "version": "0.0.2",
+  "description": "Launch Warp terminal from VS Code with configurable path, cross-platform support, URI mode, and terminal integration.",
+  "version": "0.0.3",
   "publisher": "azmolla",
   "icon": "icon.webp",
   "engines": {
@@ -17,7 +17,9 @@
   "activationEvents": [
     "onCommand:warp-terminal-launcher.launch",
     "onCommand:warp-terminal-launcher.setProfile",
-    "onCommand:warp-terminal-launcher.setDefault"
+    "onCommand:warp-terminal-launcher.setDefault",
+    "onCommand:warp-terminal-launcher.openInNewWindow",
+    "onCommand:warp-terminal-launcher.openInNewTab"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -33,6 +35,14 @@
       {
         "command": "warp-terminal-launcher.setDefault",
         "title": "Set Warp as Default Terminal"
+      },
+      {
+        "command": "warp-terminal-launcher.openInNewWindow",
+        "title": "Open Warp Terminal in New Window"
+      },
+      {
+        "command": "warp-terminal-launcher.openInNewTab",
+        "title": "Open Warp Terminal in New Tab"
       }
     ],
     "configuration": {
@@ -48,21 +58,25 @@
           "type": "boolean",
           "default": true,
           "description": "Automatically set Warp as the default terminal."
+        },
+        "warpTerminalLauncher.warpVersion": {
+          "type": "string",
+          "enum": ["stable", "preview"],
+          "default": "stable",
+          "description": "Select Warp version when using URI mode (stable = warp://, preview = warppreview://)."
         }
       }
     },
     "menus": {
       "explorer/context": [
-        {
-          "command": "warp-terminal-launcher.launch",
-          "group": "navigation"
-        }
+        { "command": "warp-terminal-launcher.launch", "group": "navigation" },
+        { "command": "warp-terminal-launcher.openInNewWindow", "group": "navigation" },
+        { "command": "warp-terminal-launcher.openInNewTab", "group": "navigation" }
       ],
       "editor/context": [
-        {
-          "command": "warp-terminal-launcher.launch",
-          "group": "navigation"
-        }
+        { "command": "warp-terminal-launcher.launch", "group": "navigation" },
+        { "command": "warp-terminal-launcher.openInNewWindow", "group": "navigation" },
+        { "command": "warp-terminal-launcher.openInNewTab", "group": "navigation" }
       ]
     }
   },
