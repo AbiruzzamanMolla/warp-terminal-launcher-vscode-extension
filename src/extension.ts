@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 import { spawn } from "child_process";
 import * as os from "os";
+import * as fs from "fs";
+import * as path from "path";
 
 function getDefaultWarpPath(): string {
     switch (process.platform) {
@@ -35,7 +37,8 @@ export function activate(context: vscode.ExtensionContext) {
                 const terminalProfilesKey = `terminal.integrated.profiles.${platformKey}`;
                 const defaultProfileKey = `terminal.integrated.defaultProfile.${platformKey}`;
 
-                const currentProfiles = (vscode.workspace.getConfiguration().get(terminalProfilesKey) as any) || {};
+                const currentProfiles =
+                    (vscode.workspace.getConfiguration().get(terminalProfilesKey) as any) || {};
 
                 // Add/Update Warp profile
                 currentProfiles["warp"] = { path: warpPath, args: [] };
@@ -65,13 +68,36 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(setProfileDisposable);
 
     // Command to launch Warp
-    const launchDisposable = vscode.commands.registerCommand("warp-terminal-launcher.launch", () => {
-        const warpPath = vscode.workspace.getConfiguration("warpTerminalLauncher").get<string>("path") || getDefaultWarpPath();
-        const folder = vscode.workspace.workspaceFolders?.[0].uri.fsPath || os.homedir();
+    const launchDisposable = vscode.commands.registerCommand(
+        "warp-terminal-launcher.launch",
+        (uri?: vscode.Uri) => {
+            const warpPath =
+                vscode.workspace.getConfiguration("warpTerminalLauncher").get<string>("path") ||
+                getDefaultWarpPath();
 
-        const warpProcess = spawn(warpPath, [], { cwd: folder, detached: true, stdio: "ignore" });
-        warpProcess.unref();
-    });
+            let folder: string;
+
+            if (uri && uri.scheme === "file") {
+                if (fs.statSync(uri.fsPath).isDirectory()) {
+                    // Right-clicked on a folder
+                    folder = uri.fsPath;
+                } else {
+                    // Right-clicked on a file → use its parent directory
+                    folder = path.dirname(uri.fsPath);
+                }
+            } else {
+                // Fallback: workspace root or home
+                folder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || os.homedir();
+            }
+
+            const warpProcess = spawn(warpPath, [], {
+                cwd: folder,
+                detached: true,
+                stdio: "ignore",
+            });
+            warpProcess.unref();
+        }
+    );
 
     context.subscriptions.push(launchDisposable);
 
